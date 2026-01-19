@@ -1,0 +1,111 @@
+import { Request, Response, NextFunction } from 'express';
+import { caseService } from '../services/caseService';
+import { z } from 'zod';
+
+// Validation schemas
+const createCaseSchema = z.object({
+  codigoSC: z.string().min(1, 'Código SC is required'),
+  dniCif: z.string().min(1, 'DNI/CIF is required'),
+  nombreApellidos: z.string().min(1, 'Nombre is required'),
+  cups: z.string().min(1, 'CUPS is required'),
+  contratoNC: z.string().min(1, 'Contrato NC is required'),
+  lineaNegocio: z.string().min(1, 'Línea de negocio is required'),
+  direccionCompleta: z.string().min(1, 'Dirección is required'),
+  codigoPostal: z.string().min(1, 'Código postal is required'),
+  municipio: z.string().min(1, 'Municipio is required'),
+  provincia: z.string().min(1, 'Provincia is required'),
+  ccaa: z.string().min(1, 'CCAA is required'),
+  distribuidora: z.string().min(1, 'Distribuidora is required'),
+  grupoDistribuidora: z.string().min(1, 'Grupo distribuidora is required'),
+  emailContacto: z.string().email('Invalid email'),
+  telefonoContacto: z.string().min(1, 'Teléfono is required'),
+  proceso: z.string().min(1, 'Proceso is required'),
+  potenciaActual: z.string().optional(),
+  potenciaSolicitada: z.string().optional(),
+  status: z.enum(['In progress', 'Revisar gestor', 'Cancelar SC']).optional(),
+  emailThreadId: z.string().optional(),
+  fechaPrimerContacto: z.string().or(z.date()),
+});
+
+const updateCaseSchema = createCaseSchema.partial().omit({ codigoSC: true });
+
+export const casesController = {
+  async getAll(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { status, search, limit, offset } = req.query;
+
+      const result = await caseService.getAllCases({
+        status: typeof status === 'string' ? status : undefined,
+        search: typeof search === 'string' ? search : undefined,
+        limit: typeof limit === 'string' ? parseInt(limit) : undefined,
+        offset: typeof offset === 'string' ? parseInt(offset) : undefined,
+      });
+
+      res.json(result);
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  async getOne(req: Request, res: Response, next: NextFunction) {
+    try {
+      const codigoSC = req.params.codigoSC as string;
+      const caseItem = await caseService.getCaseByCodigoSC(codigoSC);
+      res.json(caseItem);
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  async create(req: Request, res: Response, next: NextFunction) {
+    try {
+      const validatedData = createCaseSchema.parse(req.body);
+      const newCase = await caseService.createCase(validatedData);
+      res.status(201).json(newCase);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({
+          error: 'Validation error',
+          details: error.issues,
+        });
+      }
+      next(error);
+    }
+  },
+
+  async update(req: Request, res: Response, next: NextFunction) {
+    try {
+      const codigoSC = req.params.codigoSC as string;
+      const validatedData = updateCaseSchema.parse(req.body);
+      const updatedCase = await caseService.updateCase(codigoSC, validatedData);
+      res.json(updatedCase);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({
+          error: 'Validation error',
+          details: error.issues,
+        });
+      }
+      next(error);
+    }
+  },
+
+  async delete(req: Request, res: Response, next: NextFunction) {
+    try {
+      const codigoSC = req.params.codigoSC as string;
+      await caseService.deleteCase(codigoSC);
+      res.status(204).send();
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  async getStats(req: Request, res: Response, next: NextFunction) {
+    try {
+      const stats = await caseService.getStats();
+      res.json(stats);
+    } catch (error) {
+      next(error);
+    }
+  },
+};

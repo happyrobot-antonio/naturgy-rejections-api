@@ -1,0 +1,263 @@
+{
+  "client": "Thunder Client",
+  "collectionName": "Naturgy Rejections API",
+  "dateExported": "2026-01-18",
+  "version": "1.1",
+  "folders": [
+    {
+      "id": "cases-folder",
+      "name": "Cases",
+      "containerId": "",
+      "created": "2026-01-18T22:00:00.000Z",
+      "sortNum": 10000
+    },
+    {
+      "id": "events-folder",
+      "name": "Events",
+      "containerId": "",
+      "created": "2026-01-18T22:00:00.000Z",
+      "sortNum": 20000
+    }
+  ],
+  "requests": [
+    {
+      "id": "health-check",
+      "name": "Health Check",
+      "url": "http://localhost:4000/health",
+      "method": "GET",
+      "sortNum": 5000,
+      "created": "2026-01-18T22:00:00.000Z",
+      "modified": "2026-01-18T22:00:00.000Z",
+      "headers": [],
+      "params": [],
+      "tests": []
+    },
+    {
+      "id": "get-stats",
+      "name": "Get Stats",
+      "url": "http://localhost:4000/api/cases/stats",
+      "method": "GET",
+      "sortNum": 10000,
+      "created": "2026-01-18T22:00:00.000Z",
+      "modified": "2026-01-18T22:00:00.000Z",
+      "headers": [],
+      "params": [],
+      "containerId": "cases-folder",
+      "tests": []
+    },
+    {
+      "id": "get-all-cases",
+      "name": "Get All Cases",
+      "url": "http://localhost:4000/api/cases",
+      "method": "GET",
+      "sortNum": 20000,
+      "created": "2026-01-18T22:00:00.000Z",
+      "modified": "2026-01-18T22:00:00.000Z",
+      "headers": [],
+      "params": [],
+      "containerId": "cases-folder",
+      "tests": []
+    },
+    {
+      "id": "get-all-cases-filtered",
+      "name": "Get All Cases (Filtered)",
+      "url": "http://localhost:4000/api/cases?status=In progress&limit=10",
+      "method": "GET",
+      "sortNum": 25000,
+      "created": "2026-01-18T22:00:00.000Z",
+      "modified": "2026-01-18T22:00:00.000Z",
+      "headers": [],
+      "params": [
+        {
+          "name": "status",
+          "value": "In progress",
+          "isPath": false
+        },
+        {
+          "name": "limit",
+          "value": "10",
+          "isPath": false
+        }
+      ],
+      "containerId": "cases-folder",
+      "tests": []
+    },
+    {
+      "id": "create-case",
+      "name": "Create Case",
+      "url": "http://localhost:4000/api/cases",
+      "method": "POST",
+      "sortNum": 30000,
+      "created": "2026-01-18T22:00:00.000Z",
+      "modified": "2026-01-18T22:00:00.000Z",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"codigoSC\": \"SC-2024-001\",\n  \"dniCif\": \"12345678A\",\n  \"nombreApellidos\": \"Juan Pérez García\",\n  \"cups\": \"ES0021000000000001AB\",\n  \"contratoNC\": \"NC-001\",\n  \"lineaNegocio\": \"Electricidad\",\n  \"direccionCompleta\": \"Calle Mayor 1, 1º A\",\n  \"codigoPostal\": \"28001\",\n  \"municipio\": \"Madrid\",\n  \"provincia\": \"Madrid\",\n  \"ccaa\": \"Comunidad de Madrid\",\n  \"distribuidora\": \"UFD\",\n  \"grupoDistribuidora\": \"Naturgy\",\n  \"emailContacto\": \"juan.perez@example.com\",\n  \"telefonoContacto\": \"600123456\",\n  \"proceso\": \"Alta\",\n  \"potenciaActual\": \"3.3\",\n  \"potenciaSolicitada\": \"5.5\",\n  \"status\": \"In progress\",\n  \"fechaPrimerContacto\": \"2024-01-15T10:00:00.000Z\"\n}",
+        "form": []
+      },
+      "containerId": "cases-folder",
+      "tests": []
+    },
+    {
+      "id": "get-case",
+      "name": "Get Case by Codigo SC",
+      "url": "http://localhost:4000/api/cases/SC-2024-001",
+      "method": "GET",
+      "sortNum": 40000,
+      "created": "2026-01-18T22:00:00.000Z",
+      "modified": "2026-01-18T22:00:00.000Z",
+      "headers": [],
+      "params": [],
+      "containerId": "cases-folder",
+      "tests": []
+    },
+    {
+      "id": "update-case",
+      "name": "Update Case",
+      "url": "http://localhost:4000/api/cases/SC-2024-001",
+      "method": "PUT",
+      "sortNum": 50000,
+      "created": "2026-01-18T22:00:00.000Z",
+      "modified": "2026-01-18T22:00:00.000Z",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"status\": \"Revisar gestor\",\n  \"potenciaSolicitada\": \"6.6\"\n}",
+        "form": []
+      },
+      "containerId": "cases-folder",
+      "tests": []
+    },
+    {
+      "id": "delete-case",
+      "name": "Delete Case",
+      "url": "http://localhost:4000/api/cases/SC-2024-001",
+      "method": "DELETE",
+      "sortNum": 60000,
+      "created": "2026-01-18T22:00:00.000Z",
+      "modified": "2026-01-18T22:00:00.000Z",
+      "headers": [],
+      "params": [],
+      "containerId": "cases-folder",
+      "tests": []
+    },
+    {
+      "id": "get-case-events",
+      "name": "Get Case Events",
+      "url": "http://localhost:4000/api/cases/SC-2024-001/events",
+      "method": "GET",
+      "sortNum": 10000,
+      "created": "2026-01-18T22:00:00.000Z",
+      "modified": "2026-01-18T22:00:00.000Z",
+      "headers": [],
+      "params": [],
+      "containerId": "events-folder",
+      "tests": []
+    },
+    {
+      "id": "create-event-email-sent",
+      "name": "Create Event - Email Sent",
+      "url": "http://localhost:4000/api/cases/SC-2024-001/events",
+      "method": "POST",
+      "sortNum": 20000,
+      "created": "2026-01-18T22:00:00.000Z",
+      "modified": "2026-01-18T22:00:00.000Z",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"type\": \"email_sent\",\n  \"description\": \"Email enviado solicitando documentación adicional\",\n  \"metadata\": {\n    \"recipient\": \"juan.perez@example.com\",\n    \"subject\": \"Solicitud de documentación - SC-2024-001\",\n    \"template\": \"solicitud_documentacion\"\n  }\n}",
+        "form": []
+      },
+      "containerId": "events-folder",
+      "tests": []
+    },
+    {
+      "id": "create-event-call",
+      "name": "Create Event - Call Initiated",
+      "url": "http://localhost:4000/api/cases/SC-2024-001/events",
+      "method": "POST",
+      "sortNum": 30000,
+      "created": "2026-01-18T22:00:00.000Z",
+      "modified": "2026-01-18T22:00:00.000Z",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"type\": \"call_initiated\",\n  \"description\": \"Llamada realizada al cliente para seguimiento\",\n  \"metadata\": {\n    \"phone\": \"600123456\",\n    \"duration\": \"5 minutos\",\n    \"outcome\": \"Cliente confirma envío de documentación\"\n  }\n}",
+        "form": []
+      },
+      "containerId": "events-folder",
+      "tests": []
+    },
+    {
+      "id": "create-event-email-received-with-attachment",
+      "name": "Create Event - Email Received (With Attachment)",
+      "url": "http://localhost:4000/api/cases/SC-2024-001/events",
+      "method": "POST",
+      "sortNum": 40000,
+      "created": "2026-01-18T22:00:00.000Z",
+      "modified": "2026-01-18T22:00:00.000Z",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"type\": \"email_received_with_attachment\",\n  \"description\": \"Email recibido con documentación solicitada\",\n  \"metadata\": {\n    \"sender\": \"juan.perez@example.com\",\n    \"attachments\": [\"dni.pdf\", \"contrato.pdf\"],\n    \"subject\": \"Re: Solicitud de documentación - SC-2024-001\"\n  }\n}",
+        "form": []
+      },
+      "containerId": "events-folder",
+      "tests": []
+    },
+    {
+      "id": "create-event-email-received-no-attachment",
+      "name": "Create Event - Email Received (No Attachment)",
+      "url": "http://localhost:4000/api/cases/SC-2024-001/events",
+      "method": "POST",
+      "sortNum": 50000,
+      "created": "2026-01-18T22:00:00.000Z",
+      "modified": "2026-01-18T22:00:00.000Z",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"type\": \"email_received_no_attachment\",\n  \"description\": \"Email recibido sin documentación adjunta\",\n  \"metadata\": {\n    \"sender\": \"juan.perez@example.com\",\n    \"subject\": \"Re: Solicitud de documentación - SC-2024-001\",\n    \"message\": \"Cliente solicita más tiempo para enviar documentación\"\n  }\n}",
+        "form": []
+      },
+      "containerId": "events-folder",
+      "tests": []
+    }
+  ]
+}

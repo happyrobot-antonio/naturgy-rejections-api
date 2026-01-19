@@ -1,0 +1,82 @@
+// Naturgy Rejections - Prisma Schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model RejectionCase {
+  id                   Int       @id @default(autoincrement())
+  
+  // Primary Key como solicitado (Codigo SC)
+  codigoSC             String    @unique @map("codigo_sc")
+  
+  // Información del cliente
+  dniCif               String    @map("dni_cif")
+  nombreApellidos      String    @map("nombre_apellidos")
+  
+  // Información del contrato
+  cups                 String
+  contratoNC           String    @map("contrato_nc")
+  lineaNegocio         String    @map("linea_negocio")
+  
+  // Dirección
+  direccionCompleta    String    @map("direccion_completa")
+  codigoPostal         String    @map("codigo_postal")
+  municipio            String
+  provincia            String
+  ccaa                 String
+  
+  // Distribuidora
+  distribuidora        String
+  grupoDistribuidora   String    @map("grupo_distribuidora")
+  
+  // Contacto
+  emailContacto        String    @map("email_contacto")
+  telefonoContacto     String    @map("telefono_contacto")
+  
+  // Proceso
+  proceso              String
+  potenciaActual       String?   @map("potencia_actual")
+  potenciaSolicitada   String?   @map("potencia_solicitada")
+  
+  // Status (In progress, Revisar gestor, Cancelar SC)
+  status               String    @default("In progress")
+  
+  // Email
+  emailThreadId        String?   @map("email_thread_id")
+  fechaPrimerContacto  DateTime  @map("fecha_primer_contacto")
+  
+  // Relación con eventos
+  events               CaseEvent[]
+  
+  createdAt            DateTime  @default(now()) @map("created_at")
+  updatedAt            DateTime  @updatedAt @map("updated_at")
+  
+  @@map("rejection_cases")
+}
+
+model CaseEvent {
+  id          String       @id @default(uuid())
+  
+  // Relación con el caso
+  caseId      String       @map("case_id")
+  case        RejectionCase @relation(fields: [caseId], references: [codigoSC], onDelete: Cascade)
+  
+  // Tipo de evento (email_sent, call_initiated, email_received_with_attachment, email_received_no_attachment)
+  type        String
+  
+  // Detalles del evento
+  description String
+  metadata    Json?        // Información adicional flexible
+  
+  timestamp   DateTime     @default(now())
+  
+  @@map("case_events")
+  @@index([caseId])
+  @@index([timestamp])
+}
