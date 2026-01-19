@@ -1,5 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { caseService } from '../services/caseService';
+import { eventService } from '../services/eventService';
+import { sendCaseToHappyRobot } from '../services/happyRobotService';
 import { z } from 'zod';
 
 // Validation schemas
@@ -60,8 +62,45 @@ export const casesController = {
   async create(req: Request, res: Response, next: NextFunction) {
     try {
       const validatedData = createCaseSchema.parse(req.body);
-      const newCase = await caseService.createCase(validatedData);
-      res.status(201).json(newCase);
+      
+      // Check if case already exists
+      let existingCase;
+      let isNewCase = false;
+      try {
+        existingCase = await caseService.getCaseByCodigoSC(validatedData.codigoSC);
+        console.log(`ℹ️  Case ${validatedData.codigoSC} already exists, will append events`);
+      } catch (error) {
+        // Case doesn't exist, create it
+        isNewCase = true;
+        existingCase = await caseService.createCase(validatedData);
+        console.log(`✅ Created new case ${validatedData.codigoSC}`);
+      }
+      
+      // Send case to HappyRobot webhook (fail-safe: don't block if webhook fails)
+      try {
+        await sendCaseToHappyRobot(validatedData);
+        
+        // Create init event in timeline after successful webhook call
+        await eventService.createEvent({
+          caseId: validatedData.codigoSC,
+          type: 'happyrobot_init',
+          description: 'Automatización iniciada en HappyRobot',
+          metadata: {
+            proceso: validatedData.proceso,
+            timestamp: new Date().toISOString(),
+          },
+        });
+      } catch (webhookError) {
+        console.error('⚠️  HappyRobot webhook failed, but case was created:', {
+          codigoSC: validatedData.codigoSC,
+          error: webhookError instanceof Error ? webhookError.message : 'Unknown error',
+        });
+        // Continue - don't fail the request if webhook fails
+      }
+      
+      // Return the case with fresh data (including new events)
+      const finalCase = await caseService.getCaseByCodigoSC(validatedData.codigoSC);
+      res.status(isNewCase ? 201 : 200).json(finalCase);
     } catch (error) {
       if (error instanceof z.ZodError) {
         return res.status(400).json({

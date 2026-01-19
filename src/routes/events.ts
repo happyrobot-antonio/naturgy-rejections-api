@@ -6,7 +6,7 @@ const router = Router();
 // GET /api/events/:eventId
 router.get('/:eventId', eventsController.getOne);
 
-// DELETE /api/events/:eventId
-router.delete('/:eventId', eventsController.delete);
+// POST /api/events/:eventId/delete
+router.post('/:eventId/delete', eventsController.delete);
 
 export default router;

@@ -13,14 +13,14 @@ router.get('/', casesController.getAll);
 // GET /api/cases/:codigoSC
 router.get('/:codigoSC', casesController.getOne);
 
-// POST /api/cases
+// POST /api/cases (create new case)
 router.post('/', casesController.create);
 
-// PUT /api/cases/:codigoSC
-router.put('/:codigoSC', casesController.update);
+// POST /api/cases/:codigoSC/update (update existing case)
+router.post('/:codigoSC/update', casesController.update);
 
-// DELETE /api/cases/:codigoSC
-router.delete('/:codigoSC', casesController.delete);
+// POST /api/cases/:codigoSC/delete (delete case)
+router.post('/:codigoSC/delete', casesController.delete);
 
 // Nested events routes
 // GET /api/cases/:codigoSC/events

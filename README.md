@@ -22,11 +22,14 @@ npm install
 Crear archivo `.env` con las siguientes variables:
 
 ```bash
-DATABASE_URL="postgresql://postgres:PASSWORD@34.170.4.253:5432/happyrobot?schema=naturgy-rejections"
+DATABASE_URL="postgresql://postgres:PASSWORD@34.170.4.253:5432/happyrobot"
 PORT=4000
 NODE_ENV=development
 CORS_ORIGIN=http://localhost:3000
+HAPPYROBOT_WEBHOOK_URL=https://workflows.platform.happyrobot.ai/hooks/8w6vk54dcqbg
 ```
+
+**Nota sobre HappyRobot**: Cuando se crea un nuevo caso, automáticamente se envía la información al webhook de HappyRobot para iniciar el flujo de automatización. Si el webhook falla, el caso se crea de todas formas y el error se registra en los logs.
 
 ## Migraciones de Base de Datos
 
@@ -196,6 +199,8 @@ Content-Type: application/json
   "fechaPrimerContacto": "2024-01-01"
 }
 ```
+
+**Integración con HappyRobot**: Al crear un caso, automáticamente se envía al webhook de HappyRobot con 18 campos (excluyendo status, emailThreadId y fechaPrimerContacto). El caso se crea aunque el webhook falle.
 
 #### Actualizar un caso
 

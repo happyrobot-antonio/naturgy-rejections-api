@@ -4,6 +4,7 @@ import { z } from 'zod';
 
 const createEventSchema = z.object({
   type: z.enum([
+    'happyrobot_init',
     'email_not_found',
     'call_sent_to_get_email',
     'email_sent',
