@@ -2,14 +2,25 @@
 
 Backend API para la gestión de casos de rechazo de Naturgy.
 
+## 📚 Documentación Interactiva
+
+**Swagger UI disponible en**: `http://localhost:4000/docs/`
+
+La documentación interactiva incluye:
+- Todos los endpoints con ejemplos
+- Modelos de datos completos
+- Posibilidad de probar la API directamente desde el navegador
+- Validaciones y tipos de datos
+
 ## Stack Tecnológico
 
 - **Runtime**: Node.js 20
 - **Framework**: Express.js
-- **ORM**: Prisma
+- **Database Driver**: pg (native PostgreSQL)
 - **Base de Datos**: PostgreSQL (Cloud)
 - **Validación**: Zod
 - **Lenguaje**: TypeScript
+- **Documentación**: Swagger UI + OpenAPI 3.0
 
 ## Instalación
 
@@ -31,21 +42,14 @@ HAPPYROBOT_WEBHOOK_URL=https://workflows.platform.happyrobot.ai/hooks/8w6vk54dcq
 
 **Nota sobre HappyRobot**: Cuando se crea un nuevo caso, automáticamente se envía la información al webhook de HappyRobot para iniciar el flujo de automatización. Si el webhook falla, el caso se crea de todas formas y el error se registra en los logs.
 
-## Migraciones de Base de Datos
+## Inicialización de Base de Datos
 
 ```bash
-# Generar Prisma Client
-npm run prisma:generate
-
-# Crear migración
-npm run prisma:migrate
-
-# Aplicar migraciones en producción
-npm run prisma:deploy
-
-# Abrir Prisma Studio
-npm run prisma:studio
+# Inicializar schema de la base de datos
+npm run db:init
 ```
+
+Este comando crea las tablas `rejection_cases` y `case_events` en PostgreSQL.
 
 ## Ejecución
 
