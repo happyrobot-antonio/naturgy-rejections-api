@@ -2,6 +2,8 @@ import express from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
+import swaggerUi from 'swagger-ui-express';
+import swaggerJsdoc from 'swagger-jsdoc';
 import casesRouter from './routes/cases';
 import eventsRouter from './routes/events';
 
@@ -31,7 +33,73 @@ app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Health check
+// Swagger Configuration
+const swaggerOptions = {
+  definition: {
+    openapi: '3.0.0',
+    info: {
+      title: 'Naturgy Rejections API',
+      version: '1.0.0',
+      description: 'API para gestión de casos de rechazo de Naturgy con integración a HappyRobot',
+      contact: {
+        name: 'Naturgy Team',
+      },
+    },
+    servers: [
+      {
+        url: 'http://localhost:4000',
+        description: 'Development server',
+      },
+    ],
+    tags: [
+      {
+        name: 'Cases',
+        description: 'Endpoints para gestión de casos de rechazo',
+      },
+      {
+        name: 'Events',
+        description: 'Endpoints para gestión de eventos del timeline',
+      },
+      {
+        name: 'Health',
+        description: 'Health check endpoint',
+      },
+    ],
+  },
+  apis: ['./src/routes/*.ts', './src/index.ts'],
+};
+
+const swaggerSpec = swaggerJsdoc(swaggerOptions);
+
+// Swagger UI
+app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
+  customCss: '.swagger-ui .topbar { display: none }',
+  customSiteTitle: 'Naturgy Rejections API Docs',
+}));
+
+/**
+ * @swagger
+ * /health:
+ *   get:
+ *     tags: [Health]
+ *     summary: Health check endpoint
+ *     description: Verifica que el servidor está funcionando correctamente
+ *     responses:
+ *       200:
+ *         description: Servidor funcionando correctamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: ok
+ *                 timestamp:
+ *                   type: string
+ *                   format: date-time
+ *                   example: 2026-01-19T23:00:00.000Z
+ */
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
