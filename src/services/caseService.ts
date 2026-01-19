@@ -173,6 +173,18 @@ export const caseService = {
   },
 
   async createCase(data: CreateCaseInput) {
+    // Validate and normalize date
+    let fechaPrimerContacto: Date;
+    try {
+      fechaPrimerContacto = new Date(data.fechaPrimerContacto);
+      if (isNaN(fechaPrimerContacto.getTime())) {
+        throw new Error('Invalid date');
+      }
+    } catch {
+      // If invalid date, use current date
+      fechaPrimerContacto = new Date();
+    }
+
     const result = await query(
       `
       INSERT INTO rejection_cases (
@@ -208,7 +220,7 @@ export const caseService = {
         data.potenciaSolicitada || null,
         data.status || 'In progress',
         data.emailThreadId || null,
-        new Date(data.fechaPrimerContacto),
+        fechaPrimerContacto,
       ]
     );
 
@@ -249,7 +261,16 @@ export const caseService = {
         const dbField = fieldMap[key];
         if (dbField) {
           fields.push(`${dbField} = $${paramCount}`);
-          params.push(key === 'fechaPrimerContacto' ? new Date(value as string) : value);
+          if (key === 'fechaPrimerContacto') {
+            try {
+              const date = new Date(value as string);
+              params.push(isNaN(date.getTime()) ? new Date() : date);
+            } catch {
+              params.push(new Date());
+            }
+          } else {
+            params.push(value);
+          }
           paramCount++;
         }
       }
