@@ -1,4 +1,4 @@
-import prisma from '../lib/prisma';
+import { query } from '../lib/db';
 
 export interface CreateEventInput {
   caseId: string; // codigoSC del caso
@@ -10,54 +10,89 @@ export interface CreateEventInput {
 
 export const eventService = {
   async getEventsByCase(caseId: string) {
-    return await prisma.caseEvent.findMany({
-      where: { caseId },
-      orderBy: { timestamp: 'desc' },
-    });
+    const result = await query(
+      `
+      SELECT * FROM case_events
+      WHERE case_id = $1
+      ORDER BY timestamp DESC
+      `,
+      [caseId]
+    );
+
+    return result.rows.map(mapDatabaseRowToEvent);
   },
 
   async getEventById(eventId: string) {
-    const event = await prisma.caseEvent.findUnique({
-      where: { id: eventId },
-      include: {
-        case: true,
-      },
-    });
+    const result = await query(
+      `
+      SELECT 
+        e.*,
+        row_to_json(c.*) as case
+      FROM case_events e
+      LEFT JOIN rejection_cases c ON e.case_id = c.codigo_sc
+      WHERE e.id = $1
+      `,
+      [eventId]
+    );
 
-    if (!event) {
+    if (result.rows.length === 0) {
       throw new Error('Event not found');
     }
 
-    return event;
+    return mapDatabaseRowToEvent(result.rows[0]);
   },
 
   async createEvent(data: CreateEventInput) {
-    // Verificar que el caso existe
-    const caseExists = await prisma.rejectionCase.findUnique({
-      where: { codigoSC: data.caseId },
-    });
+    // Check if case exists
+    const caseCheck = await query(
+      'SELECT codigo_sc FROM rejection_cases WHERE codigo_sc = $1',
+      [data.caseId]
+    );
 
-    if (!caseExists) {
+    if (caseCheck.rows.length === 0) {
       throw new Error('Case not found');
     }
 
-    return await prisma.caseEvent.create({
-      data: {
-        caseId: data.caseId,
-        type: data.type,
-        description: data.description,
-        metadata: data.metadata as any || null,
-        timestamp: data.timestamp || new Date(),
-      },
-      include: {
-        case: true,
-      },
-    });
+    const result = await query(
+      `
+      INSERT INTO case_events (case_id, type, description, metadata, timestamp)
+      VALUES ($1, $2, $3, $4, $5)
+      RETURNING *
+      `,
+      [
+        data.caseId,
+        data.type,
+        data.description,
+        data.metadata ? JSON.stringify(data.metadata) : null,
+        data.timestamp || new Date(),
+      ]
+    );
+
+    return mapDatabaseRowToEvent(result.rows[0]);
   },
 
   async deleteEvent(eventId: string) {
-    return await prisma.caseEvent.delete({
-      where: { id: eventId },
-    });
+    const result = await query(
+      'DELETE FROM case_events WHERE id = $1 RETURNING *',
+      [eventId]
+    );
+
+    if (result.rows.length === 0) {
+      throw new Error('Event not found');
+    }
+
+    return mapDatabaseRowToEvent(result.rows[0]);
   },
 };
+
+function mapDatabaseRowToEvent(row: any) {
+  return {
+    id: row.id,
+    caseId: row.case_id,
+    type: row.type,
+    description: row.description,
+    metadata: row.metadata,
+    timestamp: row.timestamp,
+    ...(row.case && { case: row.case }),
+  };
+}

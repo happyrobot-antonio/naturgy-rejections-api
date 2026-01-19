@@ -1,9 +1,6 @@
 # Dockerfile for Naturgy Backend API
 FROM node:20-alpine
 
-# Install OpenSSL and other necessary dependencies for Prisma
-RUN apk add --no-cache openssl1.1-compat libc6-compat
-
 WORKDIR /app
 
 # Copy package files
@@ -12,11 +9,11 @@ COPY package*.json ./
 # Install dependencies
 RUN npm install
 
-# Copy source code and Prisma schema
+# Copy source code
 COPY . .
 
-# Generate Prisma Client
-RUN npx prisma generate
+# Build TypeScript
+RUN npm run build
 
 # Expose port
 EXPOSE 4000
