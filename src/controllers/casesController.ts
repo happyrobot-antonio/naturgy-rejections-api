@@ -27,6 +27,7 @@ const createCaseSchema = z.object({
   status: z.enum(['In progress', 'Revisar gestor', 'Cancelar SC']).optional(),
   emailThreadId: z.string().optional(),
   fechaPrimerContacto: z.string().or(z.date()),
+  duplicateMode: z.enum(['append', 'overwrite']).optional(),
 });
 
 const updateCaseSchema = createCaseSchema.partial().omit({ codigoSC: true });
@@ -61,14 +62,22 @@ export const casesController = {
 
   async create(req: Request, res: Response, next: NextFunction) {
     try {
-      const validatedData = createCaseSchema.parse(req.body);
+      const { duplicateMode = 'append', ...caseData } = createCaseSchema.parse(req.body);
+      const validatedData = caseData;
       
       // Check if case already exists
       let existingCase;
       let isNewCase = false;
       try {
         existingCase = await caseService.getCaseByCodigoSC(validatedData.codigoSC);
-        console.log(`ℹ️  Case ${validatedData.codigoSC} already exists, will append events`);
+        
+        // Handle duplicate based on mode
+        if (duplicateMode === 'overwrite') {
+          console.log(`🔄 Case ${validatedData.codigoSC} already exists, overwriting...`);
+          existingCase = await caseService.updateCase(validatedData.codigoSC, validatedData);
+        } else {
+          console.log(`ℹ️  Case ${validatedData.codigoSC} already exists, will append events`);
+        }
       } catch (error) {
         // Case doesn't exist, create it
         isNewCase = true;
@@ -84,9 +93,10 @@ export const casesController = {
         await eventService.createEvent({
           caseId: validatedData.codigoSC,
           type: 'happyrobot_init',
-          description: 'Automatización iniciada en HappyRobot',
+          description: `Automatización iniciada en HappyRobot${duplicateMode === 'overwrite' && !isNewCase ? ' (caso sobrescrito)' : ''}`,
           metadata: {
             proceso: validatedData.proceso,
+            duplicateMode: duplicateMode,
             timestamp: new Date().toISOString(),
           },
         });

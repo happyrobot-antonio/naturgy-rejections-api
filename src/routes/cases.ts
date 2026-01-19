@@ -392,6 +392,11 @@ router.post('/:codigoSC/events', eventsController.create);
  *         fechaPrimerContacto:
  *           type: string
  *           format: date
+ *         duplicateMode:
+ *           type: string
+ *           enum: [append, overwrite]
+ *           description: Modo de gestión de duplicados - 'append' agrega eventos, 'overwrite' sobrescribe el caso completo
+ *           default: append
  *     Event:
  *       type: object
  *       properties:
