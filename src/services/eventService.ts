@@ -2,7 +2,7 @@ import prisma from '../lib/prisma';
 
 export interface CreateEventInput {
   caseId: string; // codigoSC del caso
-  type: 'email_sent' | 'call_initiated' | 'email_received_with_attachment' | 'email_received_no_attachment';
+  type: 'email_not_found' | 'call_sent_to_get_email' | 'email_sent' | 'wait_24h' | 'wait_48h' | 'wait_72h' | 'email_received_with_attachment' | 'email_received_no_attachment';
   description: string;
   metadata?: Record<string, any>;
   timestamp?: Date;
