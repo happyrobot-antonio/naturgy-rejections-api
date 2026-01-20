@@ -149,6 +149,26 @@ export const casesController = {
     }
   },
 
+  async updateThreadId(req: Request, res: Response, next: NextFunction) {
+    try {
+      const codigoSC = req.params.codigoSC as string;
+      const { emailThreadId } = z.object({
+        emailThreadId: z.string().min(1, 'Email thread ID is required'),
+      }).parse(req.body);
+
+      const updatedCase = await caseService.updateCase(codigoSC, { emailThreadId });
+      res.json(updatedCase);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({
+          error: 'Validation error',
+          details: error.issues,
+        });
+      }
+      next(error);
+    }
+  },
+
   async delete(req: Request, res: Response, next: NextFunction) {
     try {
       const codigoSC = req.params.codigoSC as string;

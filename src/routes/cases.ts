@@ -182,6 +182,47 @@ router.post('/:codigoSC/update', casesController.update);
 
 /**
  * @swagger
+ * /api/cases/{codigoSC}/thread:
+ *   post:
+ *     tags: [Cases]
+ *     summary: Actualizar email thread ID de un caso
+ *     description: Actualiza el identificador del hilo de email asociado al caso
+ *     parameters:
+ *       - in: path
+ *         name: codigoSC
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Código SC del caso
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - emailThreadId
+ *             properties:
+ *               emailThreadId:
+ *                 type: string
+ *                 example: thread-abc123xyz
+ *                 description: ID del hilo de email
+ *     responses:
+ *       200:
+ *         description: Thread ID actualizado exitosamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Case'
+ *       400:
+ *         description: Error de validación
+ *       404:
+ *         description: Caso no encontrado
+ */
+router.post('/:codigoSC/thread', casesController.updateThreadId);
+
+/**
+ * @swagger
  * /api/cases/{codigoSC}/delete:
  *   post:
  *     tags: [Cases]
