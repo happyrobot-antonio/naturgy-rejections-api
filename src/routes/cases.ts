@@ -103,33 +103,31 @@ router.get('/', casesController.getAll);
  *         example: thread-abc123xyz
  *     responses:
  *       200:
- *         description: Caso encontrado
+ *         description: Respuesta siempre 200 OK (encontrado o no)
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 found:
- *                   type: boolean
- *                   example: true
- *                 case:
- *                   $ref: '#/components/schemas/Case'
- *       404:
- *         description: No se encontró caso con ese thread ID
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 found:
- *                   type: boolean
- *                   example: false
- *                 message:
- *                   type: string
- *                   example: No case found with this thread ID
- *                 threadId:
- *                   type: string
- *                   example: thread-abc123xyz
+ *               oneOf:
+ *                 - type: object
+ *                   description: Caso encontrado
+ *                   properties:
+ *                     found:
+ *                       type: boolean
+ *                       example: true
+ *                     case:
+ *                       $ref: '#/components/schemas/Case'
+ *                 - type: object
+ *                   description: Caso no encontrado
+ *                   properties:
+ *                     found:
+ *                       type: boolean
+ *                       example: false
+ *                     message:
+ *                       type: string
+ *                       example: No case found with this thread ID
+ *                     threadId:
+ *                       type: string
+ *                       example: thread-abc123xyz
  */
 router.get('/thread/:threadId', casesController.getByThreadId);
 

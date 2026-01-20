@@ -194,14 +194,14 @@ export const casesController = {
       const caseItem = await caseService.getCaseByThreadId(threadId);
       
       if (!caseItem) {
-        return res.status(404).json({
+        return res.status(200).json({
           found: false,
           message: 'No case found with this thread ID',
           threadId: threadId,
         });
       }
 
-      res.json({
+      res.status(200).json({
         found: true,
         case: caseItem,
       });
