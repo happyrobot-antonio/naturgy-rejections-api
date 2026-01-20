@@ -39,8 +39,8 @@ function transformCaseDataForHappyRobot(caseData: CaseData): Record<string, any>
     'CUPS': caseData.cups,
     'Contrato NC': caseData.contratoNC,
     'Linea de negocio': caseData.lineaNegocio,
-    'Código SC': caseData.codigoSC,
-    'Dirección completa': caseData.direccionCompleta,
+    'Codigo SC': caseData.codigoSC,                      // Sin tilde
+    'Direccion completa': caseData.direccionCompleta,    // Sin tilde
     'Codigo postal': caseData.codigoPostal,
     'Municipio': caseData.municipio,
     'Provincia': caseData.provincia,
@@ -48,7 +48,7 @@ function transformCaseDataForHappyRobot(caseData: CaseData): Record<string, any>
     'Distribuidora': caseData.distribuidora,
     'Grupo distribuidora': caseData.grupoDistribuidora,
     'Email contacto Naturgy': caseData.emailContacto,
-    'Teléfono contacto Naturgy': caseData.telefonoContacto,
+    'Telefono contacto Naturgy': caseData.telefonoContacto, // Sin tilde
     'Proceso': caseData.proceso,
     'Potencia actual': caseData.potenciaActual || '',
     'Potencia solicitada': caseData.potenciaSolicitada || '',
