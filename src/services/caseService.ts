@@ -173,6 +173,39 @@ export const caseService = {
     return mapDatabaseRowToCase(result.rows[0]);
   },
 
+  async getCaseByThreadId(emailThreadId: string) {
+    const result = await query(
+      `
+      SELECT 
+        c.*,
+        COALESCE(
+          json_agg(
+            json_build_object(
+              'id', e.id,
+              'caseId', e.case_id,
+              'type', e.type,
+              'description', e.description,
+              'metadata', e.metadata,
+              'timestamp', e.timestamp
+            ) ORDER BY e.timestamp DESC
+          ) FILTER (WHERE e.id IS NOT NULL),
+          '[]'::json
+        ) as events
+      FROM rejection_cases c
+      LEFT JOIN case_events e ON c.codigo_sc = e.case_id
+      WHERE c.email_thread_id = $1
+      GROUP BY c.id
+      `,
+      [emailThreadId]
+    );
+
+    if (result.rows.length === 0) {
+      return null; // Return null instead of throwing error
+    }
+
+    return mapDatabaseRowToCase(result.rows[0]);
+  },
+
   async createCase(data: CreateCaseInput) {
     // Validate and normalize date
     let fechaPrimerContacto: Date;

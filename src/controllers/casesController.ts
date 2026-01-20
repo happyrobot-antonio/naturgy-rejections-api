@@ -187,4 +187,26 @@ export const casesController = {
       next(error);
     }
   },
+
+  async getByThreadId(req: Request, res: Response, next: NextFunction) {
+    try {
+      const threadId = req.params.threadId as string;
+      const caseItem = await caseService.getCaseByThreadId(threadId);
+      
+      if (!caseItem) {
+        return res.status(404).json({
+          found: false,
+          message: 'No case found with this thread ID',
+          threadId: threadId,
+        });
+      }
+
+      res.json({
+        found: true,
+        case: caseItem,
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
 };

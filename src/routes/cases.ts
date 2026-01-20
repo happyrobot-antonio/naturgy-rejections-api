@@ -88,6 +88,53 @@ router.get('/', casesController.getAll);
 
 /**
  * @swagger
+ * /api/cases/thread/{threadId}:
+ *   get:
+ *     tags: [Cases]
+ *     summary: Buscar caso por email thread ID
+ *     description: Busca si existe un caso asociado a un thread ID específico de email
+ *     parameters:
+ *       - in: path
+ *         name: threadId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Email thread ID
+ *         example: thread-abc123xyz
+ *     responses:
+ *       200:
+ *         description: Caso encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 found:
+ *                   type: boolean
+ *                   example: true
+ *                 case:
+ *                   $ref: '#/components/schemas/Case'
+ *       404:
+ *         description: No se encontró caso con ese thread ID
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 found:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: No case found with this thread ID
+ *                 threadId:
+ *                   type: string
+ *                   example: thread-abc123xyz
+ */
+router.get('/thread/:threadId', casesController.getByThreadId);
+
+/**
+ * @swagger
  * /api/cases/{codigoSC}:
  *   get:
  *     tags: [Cases]
