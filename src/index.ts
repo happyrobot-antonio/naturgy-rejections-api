@@ -6,6 +6,7 @@ import swaggerUi from 'swagger-ui-express';
 import swaggerJsdoc from 'swagger-jsdoc';
 import casesRouter from './routes/cases';
 import eventsRouter from './routes/events';
+import adminRouter from './routes/admin';
 
 dotenv.config();
 
@@ -64,6 +65,10 @@ const swaggerOptions = {
         name: 'Health',
         description: 'Health check endpoint',
       },
+      {
+        name: 'Admin',
+        description: 'Endpoints administrativos',
+      },
     ],
   },
   apis: ['./src/routes/*.ts', './src/index.ts'],
@@ -107,6 +112,7 @@ app.get('/health', (req, res) => {
 // Routes
 app.use('/api/cases', casesRouter);
 app.use('/api/events', eventsRouter);
+app.use('/api/admin', adminRouter);
 
 // Error handling middleware
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
