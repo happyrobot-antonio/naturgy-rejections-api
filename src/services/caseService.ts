@@ -45,6 +45,7 @@ export interface UpdateCaseInput {
   status?: string;
   emailThreadId?: string;
   fechaPrimerContacto?: string | Date;
+  happyrobotRunId?: string;
 }
 
 export const caseService = {
@@ -254,6 +255,7 @@ export const caseService = {
       status: 'status',
       emailThreadId: 'email_thread_id',
       fechaPrimerContacto: 'fecha_primer_contacto',
+      happyrobotRunId: 'happyrobot_run_id',
     };
 
     Object.entries(data).forEach(([key, value]) => {
@@ -338,6 +340,11 @@ export const caseService = {
 };
 
 function mapDatabaseRowToCase(row: any) {
+  const happyrobotRunId = row.happyrobot_run_id;
+  const happyrobotUrl = happyrobotRunId 
+    ? `https://v2.platform.happyrobot.ai/naturgy-v2/workflow/8w6vk54dcqbg/runs?run_id=${happyrobotRunId}`
+    : null;
+
   return {
     id: row.id,
     codigoSC: row.codigo_sc,
@@ -361,6 +368,8 @@ function mapDatabaseRowToCase(row: any) {
     status: row.status,
     emailThreadId: row.email_thread_id,
     fechaPrimerContacto: row.fecha_primer_contacto,
+    happyrobotRunId: happyrobotRunId,
+    happyrobotUrl: happyrobotUrl,
     events: Array.isArray(row.events) ? row.events : [],
     createdAt: row.created_at,
     updatedAt: row.updated_at,

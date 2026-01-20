@@ -316,6 +316,12 @@ router.post('/:codigoSC/events', eventsController.create);
  *         fechaPrimerContacto:
  *           type: string
  *           format: date-time
+ *         happyrobotRunId:
+ *           type: string
+ *           description: UUID del proceso en HappyRobot
+ *         happyrobotUrl:
+ *           type: string
+ *           description: URL de seguimiento del proceso en HappyRobot
  *         events:
  *           type: array
  *           items:
@@ -407,7 +413,7 @@ router.post('/:codigoSC/events', eventsController.create);
  *           type: string
  *         type:
  *           type: string
- *           enum: [happyrobot_init, email_not_found, call_sent_to_get_email, email_sent, wait_24h, wait_48h, wait_72h, email_received_with_attachment, email_received_no_attachment]
+ *           enum: [happyrobot_init, email_not_found, call_sent, email_sent, wait_24h, wait_48h, wait_72h, email_received_with_attachment, email_received_no_attachment]
  *         description:
  *           type: string
  *         metadata:
@@ -423,7 +429,7 @@ router.post('/:codigoSC/events', eventsController.create);
  *       properties:
  *         type:
  *           type: string
- *           enum: [happyrobot_init, email_not_found, call_sent_to_get_email, email_sent, wait_24h, wait_48h, wait_72h, email_received_with_attachment, email_received_no_attachment]
+ *           enum: [happyrobot_init, email_not_found, call_sent, email_sent, wait_24h, wait_48h, wait_72h, email_received_with_attachment, email_received_no_attachment, needs_assistance]
  *         description:
  *           type: string
  *         metadata:

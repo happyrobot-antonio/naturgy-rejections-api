@@ -51,6 +51,9 @@ model RejectionCase {
   emailThreadId        String?   @map("email_thread_id")
   fechaPrimerContacto  DateTime  @map("fecha_primer_contacto")
   
+  // HappyRobot Integration
+  happyrobotRunId      String?   @map("happyrobot_run_id")
+  
   // Relación con eventos
   events               CaseEvent[]
   

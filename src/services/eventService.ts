@@ -2,7 +2,7 @@ import { query } from '../lib/db';
 
 export interface CreateEventInput {
   caseId: string; // codigoSC del caso
-  type: 'happyrobot_init' | 'email_not_found' | 'call_sent_to_get_email' | 'email_sent' | 'wait_24h' | 'wait_48h' | 'wait_72h' | 'email_received_with_attachment' | 'email_received_no_attachment';
+  type: 'happyrobot_init' | 'email_not_found' | 'call_sent' | 'email_sent' | 'wait_24h' | 'wait_48h' | 'wait_72h' | 'email_received_with_attachment' | 'email_received_no_attachment' | 'needs_assistance';
   description: string;
   metadata?: Record<string, any>;
   timestamp?: Date;

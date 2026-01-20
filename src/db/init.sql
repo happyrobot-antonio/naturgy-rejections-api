@@ -45,6 +45,9 @@ CREATE TABLE IF NOT EXISTS rejection_cases (
   email_thread_id VARCHAR(255),
   fecha_primer_contacto TIMESTAMP NOT NULL,
   
+  -- HappyRobot Integration
+  happyrobot_run_id VARCHAR(255),
+  
   -- Timestamps
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL

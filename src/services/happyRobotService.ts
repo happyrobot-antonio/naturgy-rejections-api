@@ -55,12 +55,17 @@ function transformCaseDataForHappyRobot(caseData: CaseData): Record<string, any>
   };
 }
 
+interface HappyRobotResponse {
+  queued_run_ids?: string[];
+  status?: string;
+}
+
 /**
  * Sends case data to HappyRobot webhook endpoint
  * @param caseData - The case data to send
- * @returns Promise with the response or throws an error
+ * @returns Promise with the HappyRobot run ID (UUID) or null if not provided
  */
-export async function sendCaseToHappyRobot(caseData: CaseData): Promise<void> {
+export async function sendCaseToHappyRobot(caseData: CaseData): Promise<string | null> {
   const transformedData = transformCaseDataForHappyRobot(caseData);
   
   console.log('📤 Sending case to HappyRobot:', caseData.codigoSC);
@@ -79,11 +84,16 @@ export async function sendCaseToHappyRobot(caseData: CaseData): Promise<void> {
       throw new Error(`HappyRobot webhook failed: ${response.status} - ${errorText}`);
     }
 
-    const responseData = await response.json();
+    const responseData = await response.json() as HappyRobotResponse;
+    const runId = responseData.queued_run_ids?.[0] || null;
+    
     console.log('✅ HappyRobot webhook success:', {
       codigoSC: caseData.codigoSC,
+      runId,
       response: responseData,
     });
+    
+    return runId;
   } catch (error) {
     console.error('❌ HappyRobot webhook error:', {
       codigoSC: caseData.codigoSC,

@@ -87,7 +87,13 @@ export const casesController = {
       
       // Send case to HappyRobot webhook (fail-safe: don't block if webhook fails)
       try {
-        await sendCaseToHappyRobot(validatedData);
+        const happyrobotRunId = await sendCaseToHappyRobot(validatedData);
+        
+        // Save HappyRobot run ID to case if received
+        if (happyrobotRunId) {
+          await caseService.updateCase(validatedData.codigoSC, { happyrobotRunId });
+          console.log(`✅ HappyRobot run ID saved: ${happyrobotRunId}`);
+        }
         
         // Create init event in timeline after successful webhook call
         await eventService.createEvent({
@@ -97,6 +103,10 @@ export const casesController = {
           metadata: {
             proceso: validatedData.proceso,
             duplicateMode: duplicateMode,
+            happyrobotRunId: happyrobotRunId || undefined,
+            happyrobotUrl: happyrobotRunId 
+              ? `https://v2.platform.happyrobot.ai/naturgy-v2/workflow/8w6vk54dcqbg/runs?run_id=${happyrobotRunId}`
+              : undefined,
             timestamp: new Date().toISOString(),
           },
         });
