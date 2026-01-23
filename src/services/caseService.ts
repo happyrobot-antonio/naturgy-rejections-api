@@ -64,6 +64,7 @@ export const caseService = {
               'id', e.id,
               'caseId', e.case_id,
               'type', e.type,
+              'title', e.title,
               'description', e.description,
               'metadata', e.metadata,
               'timestamp', e.timestamp
@@ -151,6 +152,7 @@ export const caseService = {
               'id', e.id,
               'caseId', e.case_id,
               'type', e.type,
+              'title', e.title,
               'description', e.description,
               'metadata', e.metadata,
               'timestamp', e.timestamp
@@ -184,6 +186,7 @@ export const caseService = {
               'id', e.id,
               'caseId', e.case_id,
               'type', e.type,
+              'title', e.title,
               'description', e.description,
               'metadata', e.metadata,
               'timestamp', e.timestamp

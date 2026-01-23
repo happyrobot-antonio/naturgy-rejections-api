@@ -62,6 +62,7 @@ CREATE TABLE IF NOT EXISTS case_events (
   type VARCHAR(100) NOT NULL,
   
   -- Event details
+  title VARCHAR(255) NOT NULL,
   description TEXT NOT NULL,
   metadata JSONB,
   

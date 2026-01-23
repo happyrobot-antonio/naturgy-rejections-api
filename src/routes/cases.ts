@@ -499,11 +499,24 @@ router.post('/:codigoSC/events', eventsController.create);
  *           type: string
  *         type:
  *           type: string
- *           enum: [happyrobot_init, email_not_found, call_sent, email_sent, wait_24h, wait_48h, wait_72h, email_received_with_attachment, email_received_no_attachment]
+ *           enum: [email_sent, call, incoming_email, missing_information, wait_time, needs_review, result]
+ *           description: Tipo de evento
+ *         title:
+ *           type: string
+ *           description: Título del evento (dinámico)
+ *           example: Llamada al cliente
  *         description:
  *           type: string
+ *           description: Descripción detallada del evento
+ *           example: Intento de contacto - no respondió
  *         metadata:
  *           type: object
+ *           properties:
+ *             callStatus:
+ *               type: string
+ *               enum: [Not reached, Reached, Needs help]
+ *               description: Estado de la llamada (solo para eventos de tipo 'call')
+ *           additionalProperties: true
  *         timestamp:
  *           type: string
  *           format: date-time
@@ -511,15 +524,33 @@ router.post('/:codigoSC/events', eventsController.create);
  *       type: object
  *       required:
  *         - type
+ *         - title
  *         - description
  *       properties:
  *         type:
  *           type: string
- *           enum: [happyrobot_init, email_not_found, call_sent, email_sent, wait_24h, wait_48h, wait_72h, email_received_with_attachment, email_received_no_attachment, needs_assistance]
+ *           enum: [email_sent, call, incoming_email, missing_information, wait_time, needs_review, result]
+ *           description: Tipo de evento
+ *         title:
+ *           type: string
+ *           description: Título del evento
+ *           example: Llamada al cliente
  *         description:
  *           type: string
+ *           description: Descripción detallada
+ *           example: Intento de contacto - no respondió
  *         metadata:
  *           type: object
+ *           properties:
+ *             callStatus:
+ *               type: string
+ *               enum: [Not reached, Reached, Needs help]
+ *               description: Estado de la llamada (requerido para eventos tipo 'call')
+ *           additionalProperties: true
+ *         timestamp:
+ *           type: string
+ *           format: date-time
+ *           description: Timestamp opcional (se usa la fecha actual por defecto)
  */
 
 export default router;

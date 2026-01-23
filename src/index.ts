@@ -7,6 +7,7 @@ import swaggerJsdoc from 'swagger-jsdoc';
 import casesRouter from './routes/cases';
 import eventsRouter from './routes/events';
 import adminRouter from './routes/admin';
+import analyticsRouter from './routes/analytics';
 
 dotenv.config();
 
@@ -113,6 +114,7 @@ app.get('/health', (req, res) => {
 app.use('/api/cases', casesRouter);
 app.use('/api/events', eventsRouter);
 app.use('/api/admin', adminRouter);
+app.use('/api/analytics', analyticsRouter);
 
 // Error handling middleware
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {

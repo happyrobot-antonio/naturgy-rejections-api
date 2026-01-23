@@ -24,7 +24,7 @@ const createCaseSchema = z.object({
   proceso: z.string().min(1, 'Proceso is required'),
   potenciaActual: z.string().optional(),
   potenciaSolicitada: z.string().optional(),
-  status: z.enum(['In progress', 'Revisar gestor', 'Cancelar SC']).optional(),
+  status: z.enum(['In progress', 'Revisar gestor', 'Cancelar SC', 'Relanzar SC']).optional(),
   emailThreadId: z.string().optional(),
   fechaPrimerContacto: z.string().or(z.date()),
   duplicateMode: z.enum(['append', 'overwrite']).optional(),
@@ -98,8 +98,9 @@ export const casesController = {
         // Create init event in timeline after successful webhook call
         await eventService.createEvent({
           caseId: validatedData.codigoSC,
-          type: 'happyrobot_init',
-          description: `Automatización iniciada en HappyRobot${duplicateMode === 'overwrite' && !isNewCase ? ' (caso sobrescrito)' : ''}`,
+          type: 'email_sent',
+          title: 'Email inicial enviado',
+          description: `Automatización iniciada - Email inicial enviado${duplicateMode === 'overwrite' && !isNewCase ? ' (caso sobrescrito)' : ''}`,
           metadata: {
             proceso: validatedData.proceso,
             duplicateMode: duplicateMode,

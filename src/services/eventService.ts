@@ -2,7 +2,8 @@ import { query } from '../lib/db';
 
 export interface CreateEventInput {
   caseId: string; // codigoSC del caso
-  type: 'happyrobot_init' | 'email_not_found' | 'call_sent' | 'email_sent' | 'wait_24h' | 'wait_48h' | 'wait_72h' | 'email_received_with_attachment' | 'email_received_no_attachment' | 'needs_assistance';
+  type: 'email_sent' | 'call' | 'incoming_email' | 'missing_information' | 'wait_time' | 'needs_review' | 'result';
+  title: string;
   description: string;
   metadata?: Record<string, any>;
   timestamp?: Date;
@@ -55,13 +56,14 @@ export const eventService = {
 
     const result = await query(
       `
-      INSERT INTO case_events (case_id, type, description, metadata, timestamp)
-      VALUES ($1, $2, $3, $4, $5)
+      INSERT INTO case_events (case_id, type, title, description, metadata, timestamp)
+      VALUES ($1, $2, $3, $4, $5, $6)
       RETURNING *
       `,
       [
         data.caseId,
         data.type,
+        data.title,
         data.description,
         data.metadata ? JSON.stringify(data.metadata) : null,
         data.timestamp || new Date(),
@@ -90,6 +92,7 @@ function mapDatabaseRowToEvent(row: any) {
     id: row.id,
     caseId: row.case_id,
     type: row.type,
+    title: row.title,
     description: row.description,
     metadata: row.metadata,
     timestamp: row.timestamp,

@@ -4,19 +4,19 @@ import { z } from 'zod';
 
 const createEventSchema = z.object({
   type: z.enum([
-    'happyrobot_init',
-    'email_not_found',
-    'call_sent',
     'email_sent',
-    'wait_24h',
-    'wait_48h',
-    'wait_72h',
-    'email_received_with_attachment',
-    'email_received_no_attachment',
-    'needs_assistance',
+    'call',
+    'incoming_email',
+    'missing_information',
+    'wait_time',
+    'needs_review',
+    'result',
   ]),
+  title: z.string().min(1, 'Title is required'),
   description: z.string().min(1, 'Description is required'),
-  metadata: z.record(z.string(), z.any()).optional(),
+  metadata: z.object({
+    callStatus: z.enum(['Not reached', 'Reached', 'Needs help']).optional(),
+  }).passthrough().optional(),
   timestamp: z.string().or(z.date()).optional(),
 });
 
