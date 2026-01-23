@@ -8,6 +8,7 @@ import casesRouter from './routes/cases';
 import eventsRouter from './routes/events';
 import adminRouter from './routes/admin';
 import analyticsRouter from './routes/analytics';
+import authRouter from './routes/auth';
 
 dotenv.config();
 
@@ -111,6 +112,7 @@ app.get('/health', (req, res) => {
 });
 
 // Routes
+app.use('/api/auth', authRouter);
 app.use('/api/cases', casesRouter);
 app.use('/api/events', eventsRouter);
 app.use('/api/admin', adminRouter);
